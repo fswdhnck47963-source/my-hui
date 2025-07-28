@@ -23,25 +23,31 @@ jobs:
           npm install
           npm install -g lean-cli
 
-      - name: Add npm global bin to PATH
+      - name: Add npm global bin to PATH and Verify
         run: |
           # 获取 npm 全局 bin 路径
           GLOBAL_NPM_BIN=$(npm bin -g)
           echo "Detected npm global bin path: $GLOBAL_NPM_BIN"
-          # 将该路径添加到 GitHub Actions 的 PATH
-          echo "$GLOBAL_NPM_BIN" >> $GITHUB_PATH
-          echo "Current PATH after modification: $PATH" # 打印 PATH 再次确认
 
-      - name: Verify lean-cli is found
-        run: |
-          # 检查 'lean' 命令是否在 PATH 中
+          # 检查路径是否为空，如果为空则报错退出
+          if [ -z "$GLOBAL_NPM_BIN" ]; then
+            echo "Error: npm global bin path could not be determined. Exiting."
+            exit 1 # 如果路径为空，明确报错退出
+          fi
+
+          # 将该路径添加到 GitHub Actions 的 PATH 中
+          echo "$GLOBAL_NPM_BIN" >> $GITHUB_PATH
+          echo "Updated PATH after adding npm bin: $PATH" # 打印更新后的 PATH
+
+          # 验证 'lean' 命令是否可用
+          echo "Attempting to find 'lean' command..."
           if command -v lean &> /dev/null
           then
-              echo "'lean' command found. Proceeding with deployment."
-              lean --version # 确认版本
+              echo "'lean' command found at: $(which lean)"
+              lean --version # 显示 lean-cli 版本
           else
-              echo "Error: 'lean' command not found in PATH."
-              exit 127 # 如果找不到，明确报错
+              echo "Error: 'lean' command not found in PATH after all attempts."
+              exit 127 # 如果最终还是找不到，明确报错退出
           fi
 
       - name: Deploy to LeanCloud
