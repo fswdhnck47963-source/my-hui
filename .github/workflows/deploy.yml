@@ -21,7 +21,7 @@ jobs:
         run: npm install -g lean-cli
 
       - name: Deploy to LeanCloud
-        run: lean deploy
+        run: npx lean deploy # <-- 已修复：使用 npx 来确保命令能被找到
         env:
           LEANCLOUD_APP_ID: 'jrJXnuJG3a5nR1dilUv27qLp-gzGzoHsz'
           LEANCLOUD_DEPLOY_TOKEN: ${{ secrets.LEAN_DEPLOY_TOKEN }}
