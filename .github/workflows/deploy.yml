@@ -22,6 +22,8 @@ jobs:
         run: |
           npm install
           npm install -g lean-cli
+          # 关键修正：将npm全局bin目录添加到PATH
+          echo "$(npm bin -g)" >> $GITHUB_PATH 
 
       - name: Deploy to LeanCloud
         run: lean deploy
