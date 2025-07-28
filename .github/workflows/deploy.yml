@@ -15,7 +15,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18' # 确保使用 Node.js 18
+          node-version: '18'
 
       - name: Install Dependencies and CLI
         working-directory: ./cloud
@@ -25,29 +25,29 @@ jobs:
 
       - name: Add npm global bin to PATH and Verify
         run: |
-          # 获取 npm 全局 bin 路径
+          # Get npm global bin path
           GLOBAL_NPM_BIN=$(npm bin -g)
           echo "Detected npm global bin path: $GLOBAL_NPM_BIN"
 
-          # 检查路径是否为空，如果为空则报错退出
+          # Check if path is empty, if so, exit with error
           if [ -z "$GLOBAL_NPM_BIN" ]; then
             echo "Error: npm global bin path could not be determined. Exiting."
-            exit 1 # 如果路径为空，明确报错退出
+            exit 1
           fi
 
-          # 将该路径添加到 GitHub Actions 的 PATH 中
+          # Add the path to GitHub Actions' PATH
           echo "$GLOBAL_NPM_BIN" >> $GITHUB_PATH
-          echo "Updated PATH after adding npm bin: $PATH" # 打印更新后的 PATH
+          echo "Updated PATH after adding npm bin: $PATH"
 
-          # 验证 'lean' 命令是否可用
+          # Verify if 'lean' command is available
           echo "Attempting to find 'lean' command..."
           if command -v lean &> /dev/null
           then
               echo "'lean' command found at: $(which lean)"
-              lean --version # 显示 lean-cli 版本
+              lean --version
           else
               echo "Error: 'lean' command not found in PATH after all attempts."
-              exit 127 # 如果最终还是找不到，明确报错退出
+              exit 127
           fi
 
       - name: Deploy to LeanCloud
