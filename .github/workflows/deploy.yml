@@ -10,10 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4 # <-- 已更新到 v4
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # 使用一个稳定的 Node.js 版本
+
+      - name: Install LeanCloud CLI
+        run: npm install -g lean-cli
 
       - name: Deploy to LeanCloud
-        uses: leancloud/lean-cli-action@v1
-        with:
-          app-id: 'jrJXnuJG3a5nR1dilUv27qLp-gzGzoHsz'
-          deploy-token: ${{ secrets.LEAN_DEPLOY_TOKEN }}
+        run: lean deploy
+        env:
+          LEANCLOUD_APP_ID: 'jrJXnuJG3a5nR1dilUv27qLp-gzGzoHsz'
+          LEANCLOUD_DEPLOY_TOKEN: ${{ secrets.LEAN_DEPLOY_TOKEN }}
