@@ -1,5 +1,4 @@
 name: Deploy to LeanCloud
-
 on:
   push:
     branches:
@@ -11,42 +10,28 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-
+        
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-
-      - name: Install Dependencies and CLI
+          cache: 'npm'
+          cache-dependency-path: './cloud/package-lock.json'
+          
+      - name: Install Dependencies
         working-directory: ./cloud
+        run: npm ci
+        
+      - name: Install LeanCloud CLI
+        run: npm install -g lean-cli
+        
+      - name: Verify CLI Installation
         run: |
-          npm install
-          npm install -g lean-cli
-
-      - name: Add npm global bin to PATH and Verify
-        run: |
-          GLOBAL_NPM_BIN=$(npm bin -g)
-          echo "Detected npm global bin path: $GLOBAL_NPM_BIN"
-
-          if [ -z "$GLOBAL_NPM_BIN" ]; then
-            echo "Error: npm global bin path could not be determined. Exiting."
-            exit 1
-          fi
-
-          echo "$GLOBAL_NPM_BIN" >> $GITHUB_PATH
-          echo "Updated PATH after adding npm bin: $PATH"
-
-          echo "Attempting to find 'lean' command..."
-          if command -v lean &> /dev/null
-          then
-              echo "'lean' command found at: $(which lean)"
-              lean --version
-          else
-              echo "Error: 'lean' command not found in PATH after all attempts."
-              exit 127
-          fi
-
+          lean --version
+          echo "LeanCloud CLI installed successfully"
+          
       - name: Deploy to LeanCloud
+        working-directory: ./cloud
         run: lean deploy
         env:
           LEANCLOUD_APP_ID: 'jrJXnuJG3a5nR1dilUv27qLp-gzGzoHsz'
