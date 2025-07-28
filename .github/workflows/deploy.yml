@@ -1,0 +1,19 @@
+name: Deploy to LeanCloud
+
+on:
+  push:
+    branches:
+      - main # 当代码被推送到 main 分支时触发
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Deploy to LeanCloud
+        uses: leancloud/lean-cli-action@v1
+        with:
+          app-id: 'jrJXnuJG3a5nR1dilUv27qLp-gzGzoHsz'
+          deploy-token: ${{ secrets.LEAN_DEPLOY_TOKEN }}
