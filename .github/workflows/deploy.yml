@@ -3,7 +3,7 @@ name: Deploy to LeanCloud
 on:
   push:
     branches:
-      - main # 当代码被推送到 main 分支时触发
+      - main
 
 jobs:
   deploy:
@@ -15,15 +15,34 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '18' # 确保使用 Node.js 18
 
       - name: Install Dependencies and CLI
         working-directory: ./cloud
         run: |
           npm install
           npm install -g lean-cli
-          # 关键修正：将npm全局bin目录添加到PATH
-          echo "$(npm bin -g)" >> $GITHUB_PATH 
+
+      - name: Add npm global bin to PATH
+        run: |
+          # 获取 npm 全局 bin 路径
+          GLOBAL_NPM_BIN=$(npm bin -g)
+          echo "Detected npm global bin path: $GLOBAL_NPM_BIN"
+          # 将该路径添加到 GitHub Actions 的 PATH
+          echo "$GLOBAL_NPM_BIN" >> $GITHUB_PATH
+          echo "Current PATH after modification: $PATH" # 打印 PATH 再次确认
+
+      - name: Verify lean-cli is found
+        run: |
+          # 检查 'lean' 命令是否在 PATH 中
+          if command -v lean &> /dev/null
+          then
+              echo "'lean' command found. Proceeding with deployment."
+              lean --version # 确认版本
+          else
+              echo "Error: 'lean' command not found in PATH."
+              exit 127 # 如果找不到，明确报错
+          fi
 
       - name: Deploy to LeanCloud
         run: lean deploy
