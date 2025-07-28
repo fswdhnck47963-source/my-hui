@@ -15,13 +15,16 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18' # 使用一个稳定的 Node.js 版本
+          node-version: '18'
 
-      - name: Install LeanCloud CLI locally
-        run: npm install lean-cli
+      - name: Install Dependencies and CLI
+        working-directory: ./cloud
+        run: |
+          npm install
+          npm install -g lean-cli
 
       - name: Deploy to LeanCloud
-        run: npx lean deploy
+        run: lean deploy
         env:
           LEANCLOUD_APP_ID: 'jrJXnuJG3a5nR1dilUv27qLp-gzGzoHsz'
           LEANCLOUD_DEPLOY_TOKEN: ${{ secrets.LEAN_DEPLOY_TOKEN }}
