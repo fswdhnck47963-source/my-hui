@@ -17,11 +17,11 @@ jobs:
         with:
           node-version: '18' # 使用一个稳定的 Node.js 版本
 
-      - name: Install LeanCloud CLI
-        run: npm install -g lean-cli
+      - name: Install LeanCloud CLI locally
+        run: npm install lean-cli
 
       - name: Deploy to LeanCloud
-        run: npx lean deploy # <-- 已修复：使用 npx 来确保命令能被找到
+        run: npx lean deploy
         env:
           LEANCLOUD_APP_ID: 'jrJXnuJG3a5nR1dilUv27qLp-gzGzoHsz'
           LEANCLOUD_DEPLOY_TOKEN: ${{ secrets.LEAN_DEPLOY_TOKEN }}
