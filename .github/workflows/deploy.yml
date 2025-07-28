@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # <-- 已更新到 v4
 
       - name: Deploy to LeanCloud
         uses: leancloud/lean-cli-action@v1
