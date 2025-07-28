@@ -25,21 +25,17 @@ jobs:
 
       - name: Add npm global bin to PATH and Verify
         run: |
-          # Get npm global bin path
           GLOBAL_NPM_BIN=$(npm bin -g)
           echo "Detected npm global bin path: $GLOBAL_NPM_BIN"
 
-          # Check if path is empty, if so, exit with error
           if [ -z "$GLOBAL_NPM_BIN" ]; then
             echo "Error: npm global bin path could not be determined. Exiting."
             exit 1
           fi
 
-          # Add the path to GitHub Actions' PATH
           echo "$GLOBAL_NPM_BIN" >> $GITHUB_PATH
           echo "Updated PATH after adding npm bin: $PATH"
 
-          # Verify if 'lean' command is available
           echo "Attempting to find 'lean' command..."
           if command -v lean &> /dev/null
           then
